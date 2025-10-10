@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cortis Quiz</title>
+<title>Cortis Quiz Interativo</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -15,7 +15,7 @@
   }
 
   .container {
-    width: 400px;
+    width: 450px;
     background-color: rgba(0,0,0,0.5);
     padding: 20px;
     border-radius: 15px;
@@ -32,15 +32,19 @@
     background-color: #ff69b4;
     color: #fff;
     font-weight: bold;
+    transition: transform 0.2s, background-color 0.2s;
   }
 
   button:hover {
     background-color: #ff85c1;
+    transform: scale(1.05);
   }
 
   #result {
     margin-top: 20px;
     font-size: 18px;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
   }
 </style>
 </head>
@@ -48,27 +52,59 @@
 
 <div class="container">
   <h1>Cortis Quiz</h1>
-  <div id="quiz">
-    <p>Qual é o seu estilo de fã do Cortis?</p>
-    <button onclick="choose('Dance Machine')">Dance Machine</button>
-    <button onclick="choose('Vocal Star')">Vocal Star</button>
-    <button onclick="choose('Visual Lover')">Visual Lover</button>
-  </div>
+  <div id="quiz"></div>
   <div id="result"></div>
 </div>
 
 <script>
-function choose(answer) {
-  const result = document.getElementById('result');
-  if(answer === 'Dance Machine') {
-    result.innerHTML = "Você adora as coreografias e acompanha todos os movimentos do Cortis!";
-  } else if(answer === 'Vocal Star') {
-    result.innerHTML = "Você é apaixonado(a) pelas vozes incríveis dos membros e cada nota te emociona!";
-  } else if(answer === 'Visual Lover') {
-    result.innerHTML = "Você ama o estilo e visual dos membros, cada foto é perfeita!";
+const quizData = [
+  {
+    question: "Qual é o seu estilo de fã do Cortis?",
+    options: ["Dance Machine", "Vocal Star", "Visual Lover"]
+  },
+  {
+    question: "Qual música do Cortis você mais gosta?",
+    options: ["Hit explosivo", "Balada emocional", "Performance ao vivo"]
+  },
+  {
+    question: "Se você pudesse passar um dia com os membros, você:",
+    options: ["Treinaria dança com eles", "Cantaria junto em estúdio", "Tiraria fotos e admiraria o estilo deles"]
   }
-  document.getElementById('quiz').style.display = 'none';
+];
+
+let currentQuestion = 0;
+const userChoices = [];
+
+function showQuestion() {
+  const quiz = document.getElementById('quiz');
+  const q = quizData[currentQuestion];
+  let html = `<p>${q.question}</p>`;
+  q.options.forEach(option => {
+    html += `<button onclick="choose('${option}')">${option}</button>`;
+  });
+  quiz.innerHTML = html;
 }
+
+function choose(option) {
+  userChoices.push(option);
+  currentQuestion++;
+  if(currentQuestion < quizData.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz').style.display = 'none';
+  const result = document.getElementById('result');
+  let message = "Seu resultado do Cortis Quiz:\n\n";
+  message += userChoices.map((choice, i) => `${i+1}. ${choice}`).join("<br>");
+  result.innerHTML = message;
+  setTimeout(() => result.style.opacity = 1, 100);
+}
+
+showQuestion();
 </script>
 
 </body>
